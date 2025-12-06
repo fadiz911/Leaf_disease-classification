@@ -1,0 +1,16 @@
+============================================================
+CASSAVA LEAF DISEASE CLASSIFICATION - RESULTS SUMMARY
+============================================================
+
+Best Fold: 4
+Best Validation Accuracy: 76.94%
+Average Validation Accuracy: 75.81%
+Test Set Accuracy: 75.93%
+Test Set Loss: 0.6582
+
+Fold-wise Validation Accuracies:
+  Fold 1: 75.31%
+  Fold 2: 75.23%
+  Fold 3: 75.56%
+  Fold 4: 76.94%
+  Fold 5: 76.01%
