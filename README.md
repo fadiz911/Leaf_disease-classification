@@ -1,6 +1,7 @@
 # Cassava Leaf Disease Classification
-
-A deep learning project for classifying cassava leaf diseases using convolutional neural networks. This project includes a full workflow with K-Fold cross-validation, model analysis, advanced evaluation, and a comparison of state-of-the-art architectures.
+  By: Fadi zoabi and Atheel mzlbt
+ 
+ A deep learning project for classifying cassava leaf diseases using convolutional neural networks. This project includes a full workflow with K-Fold cross-validation, model analysis, advanced evaluation, and a comparison of state-of-the-art architectures.
 
 ## Table of Contents
 
@@ -40,7 +41,7 @@ The primary neural network approach utilizes transfer learning with PyTorch, com
 
 ### Class Distribution
 
-[cite_start]The dataset exhibits significant class imbalance[cite: 6]:
+The dataset exhibits significant class imbalance:
 
 | Label | Disease Name | Number of Images | Percentage |
 |-------|-------------|------------------|------------|
@@ -54,34 +55,34 @@ The primary neural network approach utilizes transfer learning with PyTorch, com
 
 ## Exploratory Data Analysis
 
-[cite_start]This section addresses the assignment requirements regarding data characteristics[cite: 3].
+This section addresses the assignment requirements regarding data characteristics.
 
 ### 1a. Size of the Data
 
 - **Total Number of Images**: 21,397
 - **Training Set**: 19,257 images
 - **Test Set**: 2,140 images
-- [cite_start]**Storage**: ~2-3 GB[cite: 4].
+- **Storage**: ~3-4 GB.
 
 ### 1b. What Data Does Each Sample Contain?
 
-- [cite_start]**Dimensions**: 800×600 pixels, 3 channels (RGB)[cite: 5].
+- **Dimensions**: 800×600 pixels, 3 channels (RGB).
 - **Preprocessing**:
     - Resize to 224×224 (for ResNet/EfficientNet inputs).
     - Normalize using ImageNet statistics (Mean: [0.485, 0.456, 0.406], Std: [0.229, 0.224, 0.225]).
-    - [cite_start]**Augmentation**: Random rotations, flips, color jitter, and CutMix are used to prevent overfitting[cite: 5].
+    - **Augmentation**: Random rotations, flips, color jitter, and CutMix are used to prevent overfitting.
 
 ### 1c. Is the Data Balanced?
 
-**No.** CMD (Label 3) dominates the dataset. [cite_start]We addressed this using Weighted Random Sampling and Class-Weighted Loss functions[cite: 6].
+**No.** CMD (Label 3) dominates the dataset. We addressed this using Weighted Random Sampling and Class-Weighted Loss functions.
 
 ### 1d. Benchmark Results for Different Methods
 
-SOTA models on this dataset typically achieve **91-93%** accuracy (Vision Transformers/Ensembles). Standard baselines (like ResNet50) typically achieve **85-88%**. [cite_start]Our initial baseline targets **~76%**[cite: 7].
+SOTA models on this dataset typically achieve **91-93%** accuracy (Vision Transformers/Ensembles). Standard baselines (like ResNet50) typically achieve **85-88%**. Our initial baseline targets **~76%**.
 
 ### 1e. Sample Images from Each Label
 
-Below are examples from the dataset. [cite_start]Note the visual similarity between CBB and CBSD (both cause brown spots), making them harder to separate than Healthy leaves[cite: 8].
+Below are examples from the dataset. Note the visual similarity between CBB and CBSD (both cause brown spots), making them harder to separate than Healthy leaves.
 
 ![Sample Images from Each Class](./EDA/samples.png)
 
@@ -91,19 +92,19 @@ Below are examples from the dataset. [cite_start]Note the visual similarity betw
 
 ### Neural Network Graph
 
-[cite_start]The core model follows a standard transfer learning graph[cite: 11]:
+The core model follows a standard transfer learning graph:
 `Input (3x224x224) -> Pretrained Backbone -> AvgPool -> Flatten -> FC Layer (Output 5/6)`
 
 ### 2a. Model Fitting and Metrics Visualization
 
-[cite_start]We utilized **5-Fold Stratified Cross-Validation**[cite: 12].
+We utilized **5-Fold Stratified Cross-Validation**.
 
 **Base Model Performance (ResNet18):**
 - **Average Val Accuracy**: 75.81%
 - **Test Set Accuracy**: 75.93%
 
 **Visualizations**:
-[cite_start]Below are the loss curves and the confusion matrix for the test set[cite: 13, 14].
+Below are the loss curves and the confusion matrix for the test set.
 
 <p float="left">
   <img src="./results/base/mean_loss_per_epoch.png" alt="Mean Loss Per Epoch" width="400"/>
@@ -113,7 +114,7 @@ Below are examples from the dataset. [cite_start]Note the visual similarity betw
 ### 2b. Error Analysis and Improvement Suggestions
 
 **Error Analysis**:
-The model frequently confuses **Label 1 (CBSD)** with **Label 2 (CGM)**. [cite_start]High-confidence errors often occur on images with poor lighting or mixed symptoms[cite: 15].
+The model frequently confuses **Label 1 (CBSD)** with **Label 2 (CGM)**. High-confidence errors often occur on images with poor lighting or mixed symptoms.
 
 **Suggestions for Improvement**:
 1.  **CutMix/MixUp**: Advanced augmentation to force the model to focus on partial features.
@@ -122,7 +123,7 @@ The model frequently confuses **Label 1 (CBSD)** with **Label 2 (CGM)**. [cite_s
 
 ### 2c. Prioritization and Implementation of Improvements
 
-[cite_start]We prioritized and implemented **CutMix** and **Class Weighted Loss**[cite: 16].
+We prioritized and implemented **CutMix** and **Class Weighted Loss**.
 
 **Results after Improvements**:
 - **Test Accuracy**: Increased to **80.0%**.
@@ -130,13 +131,13 @@ The model frequently confuses **Label 1 (CBSD)** with **Label 2 (CGM)**. [cite_s
 
 ### 2d. Test Time Augmentation (Inference-Time Aggregation)
 
-[cite_start]We implemented TTA by generating 5 different crops/flips for every test image and averaging the probabilities[cite: 17].
+We implemented TTA by generating 5 different crops/flips for every test image and averaging the probabilities.
 
 - **Result**: Accuracy increased from 80.0% to **81.2%**.
 
 ### 2e. New Category Addition
 
-[cite_start]To satisfy the requirement of domain adaptation[cite: 18]:
+To satisfy the requirement of domain adaptation:
 1.  **New Class**: Added **Label 5 (Cassava Anthracnose)**.
 2.  **Data**: Added 50 images of Anthracnose to the training set.
 3.  **Process**: Replaced the final FC layer (from 5 outputs to 6) and fine-tuned for 5 epochs.
@@ -146,11 +147,11 @@ The model frequently confuses **Label 1 (CBSD)** with **Label 2 (CGM)**. [cite_s
 
 ## Part 3: Advanced Architectures and Fine-Tuning
 
-[cite_start]We selected 4 pretrained architectures from `torchvision` to compare against our baseline[cite: 19]. [cite_start]All models were fine-tuned using the same preprocessing pipeline[cite: 22].
+We selected 4 pretrained architectures from `torchvision` to compare against our baseline. All models were fine-tuned using the same preprocessing pipeline.
 
 ### 3a. Architecture Comparison
 
-[cite_start]The table below summarizes the performance of different models on the held-out test set[cite: 23, 24].
+The table below summarizes the performance of different models on the held-out test set.
 
 | Model Name | # Parameters | Val Loss | Val Accuracy | Test Loss | Test Accuracy | # Unique Correct Samples | # Unique Errors |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -191,24 +192,13 @@ We used the **ResNeXt-50** (without the classification head) as a feature extrac
 
 ## Results & Conclusion
 
-[cite_start]This research confirms that deep convolutional neural networks are highly effective for Cassava Leaf Disease classification, though they require specific handling for class imbalance[cite: 29].
+This research confirms that deep convolutional neural networks are highly effective for Cassava Leaf Disease classification, though they require specific handling for class imbalance.
 
 **Key Findings**:
 1.  **Imbalance Handling**: Class weighting was the single most effective improvement for minority class recall.
 2.  **Architecture**: **ResNeXt-50** provided the best balance of accuracy and generalization, outperforming lighter models like MobileNet.
 3.  **Feature Extraction**: Using deep networks solely as feature extractors for SVMs yields surprisingly high accuracy (within 1.5% of end-to-end training) at a fraction of the training cost.
 
-[cite_start]*This report is prepared as part of the Deep Learning assignment 2026a.* [cite: 30]
+*This report is prepared as part of the Deep Learning assignment 2026a.*
 
 ---
-
-## Installation
-
-### Requirements
-
-```bash
-pip install torch torchvision
-pip install pandas numpy
-pip install matplotlib seaborn
-pip install scikit-learn
-pip install Pillow
