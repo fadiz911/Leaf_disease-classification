@@ -4,6 +4,7 @@ _by Fadi Zoabi & Atheel Mzlbt_
 
 ---
 
+[GitHub repository](https://github.com/fadiz911/Leaf_disease-classification)
 ## Overview
 
 This project implements a comprehensive deep learning pipeline to classify cassava leaf diseases, including exploratory data analysis (EDA), model experiments, K-Fold cross-validation, domain adaptation for new categories, and performance comparison with popular vision architectures.
